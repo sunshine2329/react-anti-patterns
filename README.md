@@ -108,3 +108,24 @@ return (
 As shown in the following screenshot, the items shift down while the input elements remain in the same position in such a way that their value does not match the value of the items anymore:
 
 ![alt text]("using indexes as a key.png", "using indexes as a key")
+
+Running the component, clicking +, and checking the console should give us all the answers we need.
+
+What we can see is that instead of inserting the new element at the top, React swaps the text of the two existing elements, and inserts the last item at the bottom as if it was new. The reason it does that is that we are using the index of the map function as the key.
+
+In fact, the index always starts from 0, even if we push a new item to the top of the list, so React thinks that we changed the values of the existing two and added a new element at index 2. The behavior is the same as it would have been without using the key property at all.
+
+This is a very common pattern because we may think that providing any key is always the best solution, but it is not like that at all. The key must be unique and stable, identifying one, and only one, item.
+
+To solve this problem, we can, for example, use the value of the item if we expect it not to be repeated within the list, or create a unique identifier, for example:
+
+```typescript
+{
+  items.map((item, index) => (
+    <li key={`${item}-${index}`}>
+      {item}
+      <input type="text" />
+    </li>
+  ))
+}
+```
