@@ -107,7 +107,7 @@ return (
 
 As shown in the following screenshot, the items shift down while the input elements remain in the same position in such a way that their value does not match the value of the items anymore:
 
-![alt text]("using indexes as a key.png", "using indexes as a key")
+![alt text](using-indexes-as-a-key.png, 'using indexes as a key')
 
 Running the component, clicking +, and checking the console should give us all the answers we need.
 
