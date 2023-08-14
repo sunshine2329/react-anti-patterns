@@ -129,3 +129,47 @@ To solve this problem, we can, for example, use the value of the item if we expe
   ))
 }
 ```
+
+## Spreading properties on DOM elements
+
+There is a common practice that has recently been described as an anti-pattern by Dan Abramov; it also triggers a warning in the console when you do it in your React application.
+
+It is a technique that is widely used in the community, and I have personally seen it multiple times in real-world projects. We usually spread the properties to the elements to avoid writing every single one manually, which is shown as follows:
+
+```typescript
+<Component {...props} />
+```
+
+This works very well. However, when we spread properties into a DOM element, we run the risk of adding unknown HTML attributes, which is bad practice.
+
+The problem is not related only to the Spread operator; passing non-standard properties one by one leads to the same issues and warnings. Since the Spread operator hides the single properties we are spreading, it is even harder to figure out what we are passing to the element.
+
+we cannot control which properties are passed from the parent.
+
+If we use the component in the following way, there are no issues:
+
+```typescript
+<Spread className="foo" />
+```
+
+This, however, is not the case if we do something such as the following. React complains because we are applying a non-standard attribute to the DOM element:
+
+```typescript
+<Spread foo="bar" className="baz" />
+```
+
+One solution we can use to solve this problem is to create a property called domProps that we can spread safely to the component because we are explicitly saying that it contains valid DOM properties.
+
+For example, we can change the Spread component in the following way:
+
+```typescript
+const Spread = props => <div {...props.domProps} />
+```
+
+We can then use it as follows:
+
+```typescript
+<Spread foo="bar" domProps={{ className: 'baz' }} />
+```
+
+It’s always good practice to be explicit.
