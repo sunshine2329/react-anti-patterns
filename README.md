@@ -6,7 +6,8 @@ all about the common anti-patterns we should avoid when using React.
 
 How initializing the state using properties received from the parent is usually an anti-pattern.
 
-**Counter Component**
+**Counter Component:**
+
 Let's set the state using props.
 
 ```typescript
@@ -52,3 +53,58 @@ This usage makes it clear that the parent can only initialize the counter, and a
 ```typescript
 <Counter initialCount={1} />
 ```
+
+## Using indexes as a key
+
+The key property uniquely identifies an element in the DOM and React uses it to check whether the element is new or whether it must be updated when the component properties or state change.
+
+Using keys is always a good idea and if you don’t do it, React gives a warning in the console (in development mode). However, it is not simply a matter of using a key; sometimes, the value that we decide to use as a key can make a difference. In fact, using the wrong key can give us unexpected behaviors in some instances. In this section, we will see one of those instances.
+
+**List Component:**
+
+```typescript
+import { FC, useState } from 'react'
+const List: FC = () => {
+  const [items, setItems] = useState(['foo', 'bar'])
+  const handleClick = () => {
+    const newItems = items.slice()
+    newItems.unshift('baz')
+    setItems(newItems)
+  }
+  return (
+    <div>
+      <ul>
+        {items.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+      <button onClick={handleClick}>+</button>
+    </div>
+  )
+}
+export default List
+```
+
+If you run the component inside the browser, you will not see any problems; clicking the + button inserts a new item at the top of the list. But let’s do an experiment.
+
+Let’s change the render in the following way, adding an input field near each item. We then use an input field because we can edit its content, making it easier to figure out the problem:
+
+```typescript
+return (
+  <div>
+    <ul>
+      {items.map((item, index) => (
+        <li key={index}>
+          {item}
+          <input type="text" />
+        </li>
+      ))}
+    </ul>
+    <button onClick={handleClick}>+</button>
+  </div>
+)
+```
+
+As shown in the following screenshot, the items shift down while the input elements remain in the same position in such a way that their value does not match the value of the items anymore:
+
+![alt text]("using indexes as a key.png", "using indexes as a key")
